@@ -1,0 +1,25 @@
+{
+  "name": "testAPI",
+  "version": "1.0.0",
+  "description": "Code Challenge for Khan Academy ",
+  "main": "index.js",
+  "scripts": {
+    "build": "browserify source/client/index.js -t babelify --outfile build/client/bundle.js",
+    "start": "nodemon server/server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "acorn": "^1.1.0",
+    "core-js": "^0.9.9",
+    "express": "^4.12.3",
+    "lodash": "^3.8.0",
+    "react-ace": "^2.0.0",
+    "reflux": "^0.2.7"
+  },
+  "devDependencies": {
+    "babel": "^5.4.2",
+    "babelify": "^6.1.0",
+    "browserify": "^10.2.0"
+  }
+}

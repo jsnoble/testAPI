@@ -4,22 +4,31 @@
   "description": "Code Challenge for Khan Academy ",
   "main": "index.js",
   "scripts": {
-    "build": "browserify source/client/index.js -t babelify --outfile build/client/bundle.js",
-    "start": "nodemon server/server.js"
+    "dev": "gulp watch",
+    "start": "gulp && node server/server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "acorn": "^1.1.0",
+    "brace": "^0.5.1",
     "core-js": "^0.9.9",
     "express": "^4.12.3",
     "lodash": "^3.8.0",
+    "react": "^0.13.3",
     "react-ace": "^2.0.0",
-    "reflux": "^0.2.7"
+    "reflux": "^0.2.7",
+    "watchify": "^3.2.1"
   },
   "devDependencies": {
-    "babel": "^5.4.2",
-    "babelify": "^6.1.0",
-    "browserify": "^10.2.0"
+    "babelify": "^6.1.1",
+    "browserify": "^10.2.0",
+    "gulp": "^3.8.11",
+    "gulp-babel": "^5.1.0",
+    "gulp-browserify": "^0.5.1",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-uglify": "^1.2.0",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
   }
 }

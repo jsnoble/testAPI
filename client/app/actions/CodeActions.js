@@ -1,7 +1,8 @@
 var Reflux = require("reflux");
 
 var CodeActions= Reflux.createActions([
-    "setCode"
+    "setCode",
+    "setStructureVariable"
 ]);
 
 module.exports = CodeActions;

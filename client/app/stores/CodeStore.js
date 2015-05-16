@@ -1,50 +1,139 @@
 var Reflux = require('reflux');
-var codeActions = require('../actions/CodeActions');
+var CodeActions = require('../actions/CodeActions');
+var ConfigStore = require('./ConfigStore');
 var acorn = require('acorn');
+var _ = require('lodash');
 
-var codeStore = Reflux.createStore({
+var CodeStore = Reflux.createStore({
 
-    listenables: codeActions,
+  listenables: CodeActions,
 
-    _messages: [],
+  //init: function(){
+  //  // this.listenTo(CodeActions.setCode, this.setCode());
+  //  this.listenTo(ConfigStore, this.setConfig());
+  //},
 
-    //need to link a config store and set it here on update
-    _config:{},
+  _structure : '',
 
-    _AST: null,
+  _messages: [],
 
-    setCode: function(code){
-        this._AST =acorn.parse(code);
-        //reset messages
-        this._messages = [];
-    },
+  _config:{},
 
-    requireCode : function(array){
-        var astTree = this._AST;
-        var args;
+  _AST: null,
 
-        //use config and interface to get values, set default in config store
-        /*if(array){
-          args = array.slice();
-          testCode.requireCode.config = array;
-        } else {
-          args =  testCode.requireCode.config;
-        }
-*/         //go through keys, true if required , false if restricted
-            //change messeage accordinly so only need one function
-        var results = _.filter(args, function(nodeType){
-            return !acorn.walk.findNodeAt(astTree, null, null, nodeType)
-          });
+  setStructureVariable: function(data){
+    this._structure = data;
+  },
 
-        if(results.length > 0){
-         _.each(results, function(nodeType){
-             this._messages.push('Make sure to have a '+ nodeType+' in your code');
-          });
-        }
+  getMessages: function(){
+    return this._messages;
+  },
+
+  getStructure: function(){
+    return this._structure;
+  },
+
+  setConfig: function(){
+    console.log('config got retrieved');
+    this._config = ConfigStore.getConfig();
+  },
+
+  setCode: function(code){
+    //console.log('i got here', code)
+    this._AST = acorn.parse(code);
+        //reset messages //might need to listen to this
+    this._messages = [];
+    this._config = ConfigStore.getConfig();
+    this.setStructure();
+    this.inspectCode();
+
+  },
+
+  inspectCode : function() {
+    var astTree = this._AST;
+    var messages = this._messages;
+
+    var mainConfig = this._config;
+    var config = _.cloneDeep(mainConfig);
+
+    var required = config.required;
+    var restrict = config.restrict;
+   // console.log('this is required',required);
+
+
+    function recurse(node) {
+      var nodeType = node.type;
+      if (!nodeType) {
+        return
+      }
+
+      if (required[nodeType] !== undefined) {
+        required[nodeType] = true;
+      }
+      if (restrict[nodeType]) {
+        messages.push('So close! Try removing ' + nodeType + ' from your code')
+      }
+      if (Array.isArray(node.body)) {
+        _.each(node.body, function (innerNode) {
+          recurse(innerNode);
+        });
+      } else if (node.consequent) {
+        recurse(node.consequent);
+      } else if (node.body) {
+        recurse(node.body);
+      }
     }
 
+    recurse(astTree);
+
+    for (var key in required) {
+      if (!required[key]) {
+        messages.push('Make sure to have a ' + key + ' in your code')
+      }
+    }
+    this.trigger();
+
+  },
+
+  setStructure: function(){
+    var strHtml = '';
+    var astTree = this._AST;
+   // console.log('ast before',astTree)
+
+    function recurse(node){
+      var nodeType = node.type;
+      if(!nodeType){
+        return;
+      }
+      var str = '<li>' + nodeType + '</li>';
+      strHtml += str;
+
+      if(Array.isArray(node.body)){
+        strHtml += '<ul>';
+        _.each(node.body,function(innerNode){
+          recurse(innerNode);
+        });
+        strHtml += '</ul>';
+      } else if(node.consequent){
+        strHtml += '<ul>';
+        recurse(node.consequent);
+        strHtml += '</ul>';
+      } else if(node.body){
+        strHtml += '<ul>';
+        recurse(node.body);
+        strHtml += '</ul>';
+      }
+    }
+
+    recurse(astTree);
+
+    CodeActions.setStructureVariable(strHtml);
+    //console.log('strut',strHtml)
+  }
 
 });
+
+module.exports = CodeStore;
 
 /*
 {

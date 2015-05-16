@@ -18,13 +18,10 @@ var Editor = React.createClass({
             '     x = "Hello";' +'\n'+
             '   }' +'\n'+
             '   for(var i = 0; i < 10; i++){' +'\n'+
-            '     console.log(x)'+'\n' +
+            '     console.log(x);'+'\n' +
             '   }' +'\n'+
             '  return "I did it!";' +'\n'+
             '}'
-           /* onCodeChange: function (newCode) {
-                console.log('Code changed to', newCode);
-            }*/
         };
     },
     componentDidMount: function () {
@@ -37,7 +34,10 @@ var Editor = React.createClass({
        // this.editor.focus();
         this.editor.setValue(this.props.initialValue);
 
+        CodeActions.setCode(this.editor.getValue());
+
         this.editor.on('change', _.debounce(function(){
+           // console.log(this.editor.getValue());
             CodeActions.setCode(this.editor.getValue());
         }, 1000).bind(this));
     },

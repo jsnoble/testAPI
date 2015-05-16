@@ -1,16 +1,17 @@
 var React = require('react');
-var Editor = require('./components/editor.jsx');
+var Editor = require('./components/Editor.jsx');
+var Messages = require('./components/Messages.jsx');
+var Structure = require('./components/Structure.jsx');
 
 var Home = React.createClass({
    render: function(){
        return(
        <div>
-            <div>React is working</div>
-           <div>
-            <Editor/>
-            </div>
-        </div>
+         <Messages/>
+         <Editor/>
+         <Structure/>
 
+       </div>
        )
    }
 

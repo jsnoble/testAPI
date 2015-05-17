@@ -1,17 +1,20 @@
 var Reflux = require('reflux');
 var CodeActions = require('../actions/CodeActions');
+var ConfigActions = require('../actions/ConfigActions');
 var ConfigStore = require('./ConfigStore');
 var acorn = require('acorn');
 var _ = require('lodash');
 
 var CodeStore = Reflux.createStore({
 
-  listenables: CodeActions,
+ // listenables: CodeActions,
 
-  //init: function(){
-  //  // this.listenTo(CodeActions.setCode, this.setCode());
-  //  this.listenTo(ConfigStore, this.setConfig());
-  //},
+  //mixins: Reflux.listenTo(ConfigStore, this.setConfig()),
+  init: function(){
+    this.listenTo(CodeActions.setCode, this.setCode);
+    this.listenTo(ConfigActions.setRequired, this.setConfig);
+    this.listenTo(ConfigActions.setRestrict, this.setConfig);
+  },
 
   _structure : '',
 
@@ -34,8 +37,9 @@ var CodeStore = Reflux.createStore({
   },
 
   setConfig: function(){
-    console.log('config got retrieved');
     this._config = ConfigStore.getConfig();
+    this._messages = [];
+    this.inspectCode();
   },
 
   setCode: function(code){
@@ -44,8 +48,9 @@ var CodeStore = Reflux.createStore({
         //reset messages //might need to listen to this
     this._messages = [];
     this._config = ConfigStore.getConfig();
-    this.setStructure();
     this.inspectCode();
+    this.setStructure();
+
 
   },
 
@@ -127,8 +132,10 @@ var CodeStore = Reflux.createStore({
 
     recurse(astTree);
 
-    CodeActions.setStructureVariable(strHtml);
+      this._structure = strHtml;
+    //CodeActions.setStructureVariable(strHtml);
     //console.log('strut',strHtml)
+    this.trigger();
   }
 
 });

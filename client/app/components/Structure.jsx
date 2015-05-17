@@ -10,25 +10,33 @@ var Structure = React.createClass({
   componentDidMount: function(){
     this.listenTo(CodeStore, this.onStructureChange)
 },
-  //componentDidMount: function(){
-  //  this.setState({
-  //    structure: CodeStore.getStructure()
-  //  })
-  //
-  //},
-
-  onStructureChange: function(data){
-    console.log('got the change', data);
-    console.log('get to me pleeeease');
+  componentWillMount: function(){
+    this.setState({
+      structure: CodeStore.getStructure()
+    })
 
   },
 
+  onStructureChange: function(){
+    this.setState({
+      structure: CodeStore.getStructure()
+    });
+
+  },
+
+  createMarkup: function() {
+    return {__html: this.state.structure};
+  },
+
   render: function() {
-   // var data = this.state;
-    console.log('this is state',this.state);
+    var data = this.state.structure;
+    var structure;
+    if(data){
+      structure = <div dangerouslySetInnerHTML={this.createMarkup()} />
+    }
     return (
       <div className='structure'>
-
+        {structure}
       </div>
     )
   }

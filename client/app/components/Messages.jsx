@@ -30,7 +30,6 @@ var Messages = React.createClass({
 
     return(
       <div className = "messages">
-        <div> Messeages goes here</div>
         { messages }
       </div>
     )

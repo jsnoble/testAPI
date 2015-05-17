@@ -27,7 +27,7 @@ var Editor = React.createClass({
     componentDidMount: function () {
         this.editor = ace.edit(this.getDOMNode());
         this.editSession = this.editor.getSession();
-
+        this.editor.$blockScrolling = Infinity;
         this.editor.getSession().setMode('ace/mode/' + this.props.mode);
         this.editor.setTheme('ace/theme/twilight');
 
@@ -39,7 +39,7 @@ var Editor = React.createClass({
         this.editor.on('change', _.debounce(function(){
            // console.log(this.editor.getValue());
             CodeActions.setCode(this.editor.getValue());
-        }, 1000).bind(this));
+        }, 500).bind(this));
     },
 
     componentWillUnmount: function () {

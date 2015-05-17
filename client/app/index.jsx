@@ -2,7 +2,7 @@ var React = require('react');
 var Editor = require('./components/Editor.jsx');
 var Messages = require('./components/Messages.jsx');
 var Structure = require('./components/Structure.jsx');
-
+var APIForm = require('./components/APIForm.jsx');
 var Home = React.createClass({
    render: function(){
        return(
@@ -10,7 +10,7 @@ var Home = React.createClass({
          <Messages/>
          <Editor/>
          <Structure/>
-
+          <APIForm/>
        </div>
        )
    }

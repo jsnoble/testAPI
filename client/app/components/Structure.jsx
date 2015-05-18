@@ -1,6 +1,5 @@
 var React = require('react');
 var CodeStore = require('../stores/CodeStore');
-var CodeActions = require('../actions/CodeActions');
 var Reflux = require('reflux');
 
 var Structure = React.createClass({
@@ -10,18 +9,17 @@ var Structure = React.createClass({
   componentDidMount: function(){
     this.listenTo(CodeStore, this.onStructureChange)
 },
+
   componentWillMount: function(){
     this.setState({
       structure: CodeStore.getStructure()
     })
-
   },
 
   onStructureChange: function(){
     this.setState({
       structure: CodeStore.getStructure()
     });
-
   },
 
   createMarkup: function() {
@@ -40,7 +38,6 @@ var Structure = React.createClass({
       </div>
     )
   }
-
 });
 
 module.exports = Structure;

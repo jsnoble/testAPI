@@ -7,7 +7,15 @@ var watchify = require('watchify');
 var babel = require('babelify');
 
 function compile(watch) {
-    var bundler = watchify(browserify('./client/app/index.jsx', { debug: true }).transform(babel));
+    var bundler = browserify('./client/app/index.jsx', { debug: true }).transform(babel);
+
+  if (watch) {
+     bundler = watchify(browserify('./client/app/index.jsx', { debug: true }).transform(babel));
+     bundler.on('update', function() {
+      console.log('-> bundling...');
+      rebundle();
+    });
+  }
 
     function rebundle() {
         bundler.bundle()
@@ -19,12 +27,7 @@ function compile(watch) {
             .pipe(gulp.dest('./client/public/bundle.js'));
     }
 
-    if (watch) {
-        bundler.on('update', function() {
-            console.log('-> bundling...');
-            rebundle();
-        });
-    }
+
 
     rebundle();
 }
@@ -37,37 +40,3 @@ gulp.task('build', function() { return compile(); });
 gulp.task('watch', function() { return watch(); });
 
 gulp.task('default', ['build']);
-
-/*
-var gulp = require('gulp');
-var babel = require('gulp-babel');
-var browserify = require('gulp-browserify');
-var uglify = require('gulp-uglify');
-
-gulp.task('dev', function() {
-    gulp.src('./client/app/index.jsx')
-        .pipe(browserify({
-            insertGlobals : true,
-            debug : true
-        }))
-        .pipe(babel())
-        .pipe(gulp.dest('./client/public/bundle.js'))
-});
-
-gulp.task('build', function() {
-    gulp.src('./client/app/index.jsx')
-        .pipe(browserify({
-            insertGlobals : true,
-            debug : false
-        }))
-        .pipe(babel())
-        .pipe(uglify())
-        .pipe(gulp.dest('./client/public/bundle.js'))
-});
-
-gulp.task('watch', function() {
-    gulp.watch('client/app/!**!/!**.jsx', ['dev']);
-});
-
-gulp.task('default', ['build']);
-*/

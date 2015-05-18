@@ -6,22 +6,63 @@
     left: 0;
     border:  2px solid;
 }
-.messages{
+.messages {
+    overflow: auto;
     width: 60%;
     height: 200px;
     border:  2px solid;
+    border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px;
 }
-.structure{
+.messages li{
+    text-align: center;
+    font-size: 18px;
+    color: green;
+    padding: 15px;
+    margin: 10px;
+}
+.messages h3{
+    text-align: center;
+}
+.form {
+    position: relative;
     float:right;
    padding: 10px;
     width : 35%;
-    height: 500px;
-    border:  2px solid;
-    overflow: scroll;
+    top: -175px;
 }
 
-.form{
+.structure{
     position: absolute;
     top: 800px;
-    width: 85%;
+    width: 35%;
+    height: 500px;
+    border:  2px solid;
+    border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+    overflow: scroll;
+}
+.comparison{
+    float: right;
+    top: 800px;
+    right: 400px;
+
+    position: absolute;
+}
+.comparison input{
+    float: right;
+}
+
+textarea{
+    width: 400px;
+    height: 200px;
+}
+
+body {
+    background: -moz-linear-gradient(left, rgba(242,242,242,1) 0%, rgba(224,224,224,1) 67%, rgba(224,224,224,1) 100%);
+    background: -ms-linear-gradient(left, rgba(242,242,242,1) 0%, rgba(224,224,224,1) 67%, rgba(224,224,224,1) 100%);
+    background: linear-gradient(to right, rgba(242,242,242,1) 0%, rgba(224,224,224,1) 67%, rgba(224,224,224,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f2f2', endColorstr='#e0e0e0', GradientType=1 );
 }

@@ -31,13 +31,11 @@ var Editor = React.createClass({
         this.editor.getSession().setMode('ace/mode/' + this.props.mode);
         this.editor.setTheme('ace/theme/twilight');
 
-       // this.editor.focus();
         this.editor.setValue(this.props.initialValue);
 
         CodeActions.setCode(this.editor.getValue());
 
         this.editor.on('change', _.debounce(function(){
-           // console.log(this.editor.getValue());
             CodeActions.setCode(this.editor.getValue());
         }, 500).bind(this));
     },

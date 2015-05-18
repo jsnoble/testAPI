@@ -4,14 +4,13 @@ var ConfigActions = require('../actions/ConfigActions');
 var ConfigStore = require('./ConfigStore');
 var acorn = require('acorn');
 var _ = require('lodash');
+var $ = require('jquery');
 
 var CodeStore = Reflux.createStore({
 
- // listenables: CodeActions,
-
-  //mixins: Reflux.listenTo(ConfigStore, this.setConfig()),
   init: function(){
     this.listenTo(CodeActions.setCode, this.setCode);
+    this.listenTo(CodeActions.compareStructure, this.compareStructure);
     this.listenTo(ConfigActions.setRequired, this.setConfig);
     this.listenTo(ConfigActions.setRestrict, this.setConfig);
   },
@@ -22,11 +21,9 @@ var CodeStore = Reflux.createStore({
 
   _config:{},
 
-  _AST: null,
+  _comparedStructure: '',
 
-  setStructureVariable: function(data){
-    this._structure = data;
-  },
+  _AST: null,
 
   getMessages: function(){
     return this._messages;
@@ -36,6 +33,10 @@ var CodeStore = Reflux.createStore({
     return this._structure;
   },
 
+  getComparedStructure: function(){
+    return this._comparedStructure;
+  },
+
   setConfig: function(){
     this._config = ConfigStore.getConfig();
     this._messages = [];
@@ -43,15 +44,11 @@ var CodeStore = Reflux.createStore({
   },
 
   setCode: function(code){
-    //console.log('i got here', code)
     this._AST = acorn.parse(code);
-        //reset messages //might need to listen to this
     this._messages = [];
     this._config = ConfigStore.getConfig();
     this.inspectCode();
     this.setStructure();
-
-
   },
 
   inspectCode : function() {
@@ -63,15 +60,12 @@ var CodeStore = Reflux.createStore({
 
     var required = config.required;
     var restrict = config.restrict;
-   // console.log('this is required',required);
-
 
     function recurse(node) {
       var nodeType = node.type;
       if (!nodeType) {
         return
       }
-
       if (required[nodeType] !== undefined) {
         required[nodeType] = true;
       }
@@ -97,20 +91,18 @@ var CodeStore = Reflux.createStore({
       }
     }
     this.trigger();
-
   },
 
   setStructure: function(){
     var strHtml = '';
     var astTree = this._AST;
-   // console.log('ast before',astTree)
 
     function recurse(node){
       var nodeType = node.type;
       if(!nodeType){
         return;
       }
-      var str = '<li>' + nodeType + '</li>';
+      var str = '<li class = '+ nodeType+'>' + nodeType + '</li>';
       strHtml += str;
 
       if(Array.isArray(node.body)){
@@ -132,20 +124,46 @@ var CodeStore = Reflux.createStore({
 
     recurse(astTree);
 
-      this._structure = strHtml;
-    //CodeActions.setStructureVariable(strHtml);
-    //console.log('strut',strHtml)
+    this._structure = strHtml;
+    this.trigger();
+  },
+
+  compareStructure: function(data){
+
+    var structure = $(this._structure);
+    var isTrue = true;
+
+    function findChild(child, node, bool) {
+      if (bool) {
+        var parent = $('.' + node).parent().prev();
+        var bool = _.some(parent, function (node) {
+          return node.innerText === child;
+        });
+        return bool;
+      }
+      var child =$('.' + child);
+      return child.length >= 1;
+    }
+
+    function walkTree(node, parent){
+      if(!findChild(node.value, parent)){
+        isTrue = false;
+        return;
+      }
+      if(node.children.length > 0){
+        for(var i = 0; i < node.children.length; i++){
+          walkTree(node.children[i], node.value, true)
+        }
+      }
+    }
+
+    _.each(data, function(tree){
+      walkTree(tree, structure)
+    });
+
+    this._comparedStructure = isTrue;
     this.trigger();
   }
-
 });
 
 module.exports = CodeStore;
-
-/*
-{
-    key for existence  value if been visted, loop at end
-    required:{type:false},
-    restricted: {type: true}
-
-}*/

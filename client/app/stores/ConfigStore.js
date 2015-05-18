@@ -18,7 +18,6 @@ var ConfigStore = Reflux.createStore({
   setRestrict: function(obj){
     this._config.restrict = obj;
   }
-
 });
 
 module.exports = ConfigStore;

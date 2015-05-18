@@ -11,9 +11,39 @@ var APIForm = React.createClass({
     };
   },
 
-  handleSubmit: function(e){
-    e.preventDefault();
-    console.log('from submit', this.state)
+  changeSelection: function(id) {
+    var state = this.state.data.map(function(d) {
+      return {
+        id: d.id,
+        selected: (d.id === id ? !d.selected : d.selected)
+      };
+    });
+
+    this.setState({ data: state });
+  },
+
+  requireCode:function(){
+    var requireConfig = {};
+
+    _.each(this.state.data, function(obj){
+      if(obj.selected){
+        requireConfig[obj.id] = false;
+      }
+    });
+
+     ConfigActions.setRequired(requireConfig);
+  },
+
+  restrictCode:function(){
+    var restrictConfig = {};
+
+    _.each(this.state.data, function(obj){
+      if(obj.selected){
+        restrictConfig[obj.id] = true;
+      }
+    });
+
+    ConfigActions.setRestrict(restrictConfig);
   },
 
   render: function() {
@@ -39,41 +69,6 @@ var APIForm = React.createClass({
 
       </form>
     );
-  },
-  changeSelection: function(id) {
-    var state = this.state.data.map(function(d) {
-      return {
-        id: d.id,
-        selected: (d.id === id ? !d.selected : d.selected)
-      };
-    });
-
-    this.setState({ data: state });
-
-  },
-
-  requireCode:function(){
-    var requireConfig = {};
-
-    _.each(this.state.data, function(obj){
-      if(obj.selected){
-        requireConfig[obj.id] = false;
-      }
-    });
-
-     ConfigActions.setRequired(requireConfig);
-  },
-
-  restrictCode:function(){
-    var restrictConfig = {};
-
-    _.each(this.state.data, function(obj){
-      if(obj.selected){
-        restrictConfig[obj.id] = true;
-      }
-    });
-
-    ConfigActions.setRestrict(restrictConfig);
   }
 
 });

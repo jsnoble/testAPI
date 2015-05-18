@@ -1,0 +1,33 @@
+
+To get started with this project, clone it down then type:
+    "npm install"
+    "npm start"  //it might take a second or two to compile
+
+
+To use the first two API's, check the appropriate boxes then click either the required or restrict code buttons
+the default setting are:
+
+{ required: {IfStatement: false, VariableDeclaration: false, ReturnStatement: false},
+ restrict:{BreakStatement: true, WithStatement: true}
+ }
+
+ The false settings for the required object are later set to true if they are found in the code
+
+ The third API for checking against the general structure of the parsed code can be located on the right side scrolling
+ down. It takes in an array of tree like structures to compare against. The key, value and children need to wrap in "".
+ Below is an example to will run true to the current default code.
+
+  [
+    {"value": "IfStatement", "children":[
+    {"value": "BlockStatement", "children": [
+    {"value": "ExpressionStatement", "children":[]}]}
+    ]},
+    {"value": "ReturnStatement", "children": []}
+  ]
+
+Visual example:
+
+    "IfStatement"
+      "BlockStatement"
+        "ExpressionStatement"
+    "ReturnStatement"

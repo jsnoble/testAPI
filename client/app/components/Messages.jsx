@@ -13,6 +13,7 @@ var Messages = React.createClass({
       messages: CodeStore.getMessages()
     }
   },
+
   componentDidMount: function(){
     this.listenTo(CodeStore, this.onMessageChange);
   },
@@ -30,11 +31,11 @@ var Messages = React.createClass({
 
     return(
       <div className = "messages">
+        <h3>Messages</h3>
         { messages }
       </div>
     )
   }
-
 });
 
 module.exports = Messages;
